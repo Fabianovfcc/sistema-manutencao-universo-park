@@ -38,3 +38,6 @@ supabase/.branches
 # Dev server logs
 dev-out.log
 dev-err.log
+
+.vercel
+.env*
