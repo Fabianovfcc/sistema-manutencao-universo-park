@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../hooks/useTheme';
 import './Header.css';
 
 type Tab = 'quadro' | 'rotina' | 'relatorio';
@@ -11,6 +12,7 @@ interface Props {
 
 export default function Header({ tab, onTabChange, onNovaOS }: Props) {
   const { socioNome, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="app-header">
@@ -20,6 +22,13 @@ export default function Header({ tab, onTabChange, onNovaOS }: Props) {
           <p>Universo Park — elétrica, hidráulica, brinquedos e estrutura</p>
         </div>
         <div className="app-header-actions">
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
           <button className="btn btn-primary" onClick={onNovaOS}>
             + Nova O.S.
           </button>
