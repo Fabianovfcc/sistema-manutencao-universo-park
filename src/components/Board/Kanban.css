@@ -1,0 +1,137 @@
+.kanban-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.kanban-columns {
+  display: flex;
+  gap: 14px;
+  padding: 18px 24px;
+  overflow-x: auto;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.kanban-column {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  min-width: 270px;
+  max-width: 300px;
+  flex: 1 0 270px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 190px);
+}
+
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.kanban-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.kanban-column-title {
+  flex: 1;
+}
+
+.kanban-column-count {
+  font-family: var(--font-mono);
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+.kanban-column-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.kanban-empty {
+  color: var(--text-2);
+  font-size: 12px;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.os-card {
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.os-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.os-card-numero {
+  color: var(--text-2);
+}
+
+.os-card-socio {
+  color: var(--text-2);
+  font-size: 11px;
+}
+
+.os-card-request {
+  background: color-mix(in srgb, var(--purple) 14%, transparent);
+  color: var(--purple);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.os-card-title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.os-card-tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.os-card-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.os-card-footer {
+  font-size: 11px;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
+.os-card-accept {
+  width: 100%;
+}
+
+.os-card-select {
+  width: 100%;
+  font-size: 12px;
+  padding: 6px 8px;
+}

@@ -1,0 +1,71 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px 12px;
+  flex-wrap: wrap;
+}
+
+.app-header-top h1 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.app-header-top p {
+  margin: 2px 0 0;
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-header-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.app-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 24px;
+}
+
+.app-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.app-tab.active {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+}
+
+@media (max-width: 640px) {
+  .app-header-top {
+    padding: 14px 16px 10px;
+  }
+  .app-tabs {
+    padding: 0 16px;
+  }
+}
