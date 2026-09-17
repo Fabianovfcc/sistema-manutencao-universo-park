@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const { signIn } = useAuth();
-  const [email, setEmail] = useState('');
+  const [nome, setNome] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const err = await signIn(email, password);
+    const err = await signIn(nome, password);
     setLoading(false);
     if (err) setError(err);
   }
@@ -49,12 +49,13 @@ export default function Login() {
           </p>
         </div>
         <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '13px' }}>
-          E-mail
+          Nome
           <input
-            type="email"
+            type="text"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Ex: Fabiano Caixeta"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
             style={inputStyle}
           />
         </label>
