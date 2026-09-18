@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { nomeToEmail, emailToNome } from '../lib/username';
+import { nomeToEmail, emailToNome, rememberDisplayName } from '../lib/username';
 
 interface AuthContextValue {
   session: Session | null;
@@ -29,11 +29,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function signIn(nome: string, password: string) {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: nomeToEmail(nome),
-      password,
-    });
-    return error ? 'Nome ou senha incorretos.' : null;
+    const email = nomeToEmail(nome);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return 'Nome ou senha incorretos.';
+    rememberDisplayName(email, nome);
+    return null;
   }
 
   async function signOut() {
