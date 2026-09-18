@@ -2,7 +2,9 @@
 
 React + Vite + TypeScript + Supabase.
 
-**Produção:** https://sistema-manutencao-universo-park.vercel.app
+**Produção:** https://fabianovfcc.github.io/sistema-manutencao-universo-park/
+
+Login é por nome (não e-mail): o nome digitado vira um e-mail sintético `nome@universopark.app` internamente (veja `src/lib/username.ts`). Crie os usuários correspondentes em Authentication → Users no Supabase.
 
 ## Rodando localmente
 
@@ -14,13 +16,18 @@ React + Vite + TypeScript + Supabase.
 
 ## Deploy
 
-Hospedado no Vercel (projeto `fabiano-s-projects14/sistema-manutencao-universo-park`). Para publicar uma nova versão:
+Hospedado no GitHub Pages (branch `gh-pages`, repositório público). Vercel/Netlify/Wrangler tiveram problemas persistentes de deploy (builds travando/crashando) nesta máquina, então o deploy é feito publicando a pasta `dist/` diretamente:
 
 ```
-npx vercel --prod --yes
+npm run build
+cd dist
+git init && git checkout -b gh-pages
+git add -A && git commit -m "Deploy GitHub Pages"
+git push -f https://github.com/Fabianovfcc/sistema-manutencao-universo-park.git HEAD:gh-pages
+cd ..
 ```
 
-As variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` já estão configuradas no ambiente de produção do projeto Vercel.
+`vite.config.ts` define `base: '/sistema-manutencao-universo-park/'` para os caminhos dos assets funcionarem sob esse subcaminho. O `.env` (com as chaves reais do Supabase) já está presente localmente no build.
 
 ## Estrutura
 
