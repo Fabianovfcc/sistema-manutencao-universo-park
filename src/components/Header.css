@@ -29,7 +29,8 @@
 .app-header-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .app-header-user {

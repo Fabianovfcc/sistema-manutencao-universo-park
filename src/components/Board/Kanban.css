@@ -10,6 +10,7 @@
   padding: 18px 24px;
   overflow-x: auto;
   flex: 1;
+  min-width: 0;
   align-items: flex-start;
 }
 

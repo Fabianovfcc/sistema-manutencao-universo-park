@@ -58,9 +58,11 @@
 .field-row {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 .field-row > * {
-  flex: 1;
+  flex: 1 1 140px;
+  min-width: 0;
 }
 
 input,
