@@ -35,6 +35,9 @@ pnpm-debug.log*
 supabase/.temp
 supabase/.branches
 
+# Backups locais de dados reais (repo é público — nunca commitar)
+supabase/backups
+
 # Dev server logs
 dev-out.log
 dev-err.log

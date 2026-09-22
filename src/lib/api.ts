@@ -1,5 +1,16 @@
 import { supabase, ANEXOS_BUCKET } from './supabase';
-import type { OS, Orcamento, Anexo, LogEntry, Rotina, AnexoTipo } from '../types';
+import type {
+  OS,
+  Orcamento,
+  Anexo,
+  LogEntry,
+  Rotina,
+  AnexoTipo,
+  ChecklistItem,
+  ChecklistDiario,
+  ChecklistResposta,
+  ChecklistStatus,
+} from '../types';
 
 // ---------- O.S. ----------
 
@@ -119,7 +130,8 @@ export async function uploadAnexo(
   osId: string,
   tipo: AnexoTipo,
   file: Blob,
-  ext: string
+  ext: string,
+  nomeOriginal?: string
 ): Promise<Anexo> {
   const path = `${osId}/${tipo}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
   const { error: upErr } = await supabase.storage.from(ANEXOS_BUCKET).upload(path, file, {
@@ -129,7 +141,7 @@ export async function uploadAnexo(
 
   const { data, error } = await supabase
     .from('manutencao_anexos')
-    .insert({ os_id: osId, tipo, storage_path: path })
+    .insert({ os_id: osId, tipo, storage_path: path, nome_original: nomeOriginal ?? null })
     .select()
     .single();
   if (error) throw error;
@@ -218,4 +230,94 @@ export async function updateRotina(id: string, patch: Partial<Rotina>): Promise<
 export async function deleteRotina(id: string): Promise<void> {
   const { error } = await supabase.from('manutencao_rotinas').delete().eq('id', id);
   if (error) throw error;
+}
+
+// ---------- Checklist diário de abertura ----------
+
+export async function fetchChecklistItens(somenteAtivos = true): Promise<ChecklistItem[]> {
+  let query = supabase.from('manutencao_checklist_itens').select('*').order('ordem', { ascending: true });
+  if (somenteAtivos) query = query.eq('ativo', true);
+  const { data, error } = await query;
+  if (error) throw error;
+  return data as ChecklistItem[];
+}
+
+export async function createChecklistItem(titulo: string, ordem: number): Promise<ChecklistItem> {
+  const { data, error } = await supabase
+    .from('manutencao_checklist_itens')
+    .insert({ titulo, ordem })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as ChecklistItem;
+}
+
+export async function updateChecklistItem(
+  id: string,
+  patch: Partial<Pick<ChecklistItem, 'titulo' | 'ativo' | 'ordem'>>
+): Promise<void> {
+  const { error } = await supabase.from('manutencao_checklist_itens').update(patch).eq('id', id);
+  if (error) throw error;
+}
+
+export async function fetchChecklistDiarios(): Promise<ChecklistDiario[]> {
+  const { data, error } = await supabase
+    .from('manutencao_checklist_diario')
+    .select('*')
+    .order('data', { ascending: false });
+  if (error) throw error;
+  return data as ChecklistDiario[];
+}
+
+export async function getOrCreateChecklistHoje(data: string): Promise<ChecklistDiario> {
+  const { error: upsertErr } = await supabase
+    .from('manutencao_checklist_diario')
+    .upsert({ data }, { onConflict: 'data', ignoreDuplicates: true });
+  if (upsertErr) throw upsertErr;
+
+  const { data: row, error } = await supabase
+    .from('manutencao_checklist_diario')
+    .select('*')
+    .eq('data', data)
+    .single();
+  if (error) throw error;
+  return row as ChecklistDiario;
+}
+
+export async function setChecklistFeitoPor(diarioId: string, feitoPor: string): Promise<void> {
+  const { error } = await supabase
+    .from('manutencao_checklist_diario')
+    .update({ feito_por: feitoPor })
+    .eq('id', diarioId);
+  if (error) throw error;
+}
+
+export async function fetchAllChecklistRespostas(): Promise<ChecklistResposta[]> {
+  const { data, error } = await supabase.from('manutencao_checklist_respostas').select('*');
+  if (error) throw error;
+  return data as ChecklistResposta[];
+}
+
+export async function upsertChecklistResposta(
+  diarioId: string,
+  itemId: string,
+  status: ChecklistStatus,
+  descricaoProblema: string | null
+): Promise<ChecklistResposta> {
+  const { data, error } = await supabase
+    .from('manutencao_checklist_respostas')
+    .upsert(
+      {
+        checklist_diario_id: diarioId,
+        checklist_item_id: itemId,
+        status,
+        descricao_problema: descricaoProblema,
+        respondido_em: new Date().toISOString(),
+      },
+      { onConflict: 'checklist_diario_id,checklist_item_id' }
+    )
+    .select()
+    .single();
+  if (error) throw error;
+  return data as ChecklistResposta;
 }

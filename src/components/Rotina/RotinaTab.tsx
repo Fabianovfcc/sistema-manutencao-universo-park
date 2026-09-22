@@ -3,12 +3,16 @@ import type { Rotina } from '../../types';
 import { formatDateBR, addDaysISO, todayISO } from '../../lib/format';
 import { whatsappLink } from '../../lib/whatsapp';
 import { updateRotina } from '../../lib/api';
+import { useAuth } from '../../context/AuthContext';
+import type { ChecklistData } from '../../hooks/useChecklist';
 import RotinaModal from './RotinaModal';
+import ChecklistDiarioSection from './ChecklistDiarioSection';
 
 interface Props {
   rotinas: Rotina[];
   loading: boolean;
   onChanged: () => void;
+  checklist: ChecklistData;
 }
 
 function mensagemConfirmacao(r: Rotina, dataAlvo: string): string {
@@ -18,7 +22,8 @@ function mensagemConfirmacao(r: Rotina, dataAlvo: string): string {
   return template.replace('{data}', formatDateBR(dataAlvo));
 }
 
-export default function RotinaTab({ rotinas, loading, onChanged }: Props) {
+export default function RotinaTab({ rotinas, loading, onChanged, checklist }: Props) {
+  const { socioNome } = useAuth();
   const [editando, setEditando] = useState<Rotina | 'new' | null>(null);
 
   async function marcarFeitoHoje(r: Rotina) {
@@ -37,14 +42,22 @@ export default function RotinaTab({ rotinas, loading, onChanged }: Props) {
   }
 
   return (
-    <div style={{ padding: '20px 24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 14 }}>
-        <button className="btn btn-primary" onClick={() => setEditando('new')}>
-          + Nova tarefa recorrente
-        </button>
-      </div>
+    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 28 }}>
+      <ChecklistDiarioSection data={checklist} socioNome={socioNome} />
 
-      {loading ? (
+      <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: 0 }} />
+
+      <div>
+        <h3 style={{ fontSize: 13, textTransform: 'uppercase', color: 'var(--text-2)', marginBottom: 12 }}>
+          Tarefas com fornecedor fixo
+        </h3>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 14 }}>
+          <button className="btn btn-primary" onClick={() => setEditando('new')}>
+            + Nova tarefa recorrente
+          </button>
+        </div>
+
+        {loading ? (
         <div style={{ color: 'var(--text-2)' }}>Carregando...</div>
       ) : (
         <div className="card" style={{ overflowX: 'auto' }}>
@@ -114,7 +127,8 @@ export default function RotinaTab({ rotinas, loading, onChanged }: Props) {
             </tbody>
           </table>
         </div>
-      )}
+        )}
+      </div>
 
       {editando && (
         <RotinaModal

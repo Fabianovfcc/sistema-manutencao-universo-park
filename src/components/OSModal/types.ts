@@ -13,6 +13,7 @@ export interface UIAnexo {
   isPdf: boolean;
   file?: File;
   storagePath?: string;
+  originalName?: string;
 }
 
 export interface UILogEntry {

@@ -1,4 +1,5 @@
 import type { UIOrcamento } from './types';
+import MoneyInput from '../MoneyInput';
 
 interface Props {
   orcamentos: UIOrcamento[];
@@ -37,11 +38,10 @@ export default function OrcamentosSection({ orcamentos, onAdd, onChange, onRemov
             onChange={(e) => onChange(o.id, { contato: e.target.value })}
             style={{ flex: 2, minWidth: 120 }}
           />
-          <input
-            type="number"
+          <MoneyInput
             placeholder="Valor"
-            value={o.valor || ''}
-            onChange={(e) => onChange(o.id, { valor: Number(e.target.value) })}
+            value={o.valor}
+            onChange={(v) => onChange(o.id, { valor: v })}
             style={{ flex: 1, minWidth: 90 }}
           />
           <button

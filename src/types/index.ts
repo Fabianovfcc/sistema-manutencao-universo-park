@@ -4,6 +4,10 @@ export type Categoria =
   | 'Brinquedos'
   | 'Estrutura/Galpão'
   | 'Desentupimento'
+  | 'Cozinha'
+  | 'Bar'
+  | 'Salão de festa'
+  | 'Gel Ball'
   | 'Outro';
 
 export const CATEGORIAS: Categoria[] = [
@@ -12,6 +16,10 @@ export const CATEGORIAS: Categoria[] = [
   'Brinquedos',
   'Estrutura/Galpão',
   'Desentupimento',
+  'Cozinha',
+  'Bar',
+  'Salão de festa',
+  'Gel Ball',
   'Outro',
 ];
 
@@ -74,6 +82,7 @@ export interface Anexo {
   os_id: string;
   tipo: AnexoTipo;
   storage_path: string;
+  nome_original: string | null;
   created_at: string;
 }
 
@@ -105,3 +114,36 @@ export const FREQUENCIAS: { label: string; dias: number }[] = [
   { label: 'Trimestral', dias: 90 },
   { label: 'Semestral', dias: 180 },
 ];
+
+// ---------- Checklist diário de abertura ----------
+
+export interface ChecklistItem {
+  id: string;
+  titulo: string;
+  ativo: boolean;
+  ordem: number;
+  created_at: string;
+}
+
+export type ChecklistStatus = 'ok' | 'nao_funcionando';
+
+export const CHECKLIST_STATUS_LABEL: Record<ChecklistStatus, string> = {
+  ok: 'Funcionando / OK',
+  nao_funcionando: 'Não está funcionando',
+};
+
+export interface ChecklistDiario {
+  id: string;
+  data: string;
+  feito_por: string | null;
+  created_at: string;
+}
+
+export interface ChecklistResposta {
+  id: string;
+  checklist_diario_id: string;
+  checklist_item_id: string;
+  status: ChecklistStatus;
+  descricao_problema: string | null;
+  respondido_em: string;
+}

@@ -3,6 +3,7 @@ import type { OS, Categoria, Prioridade, Status } from '../../types';
 import { CATEGORIAS, PRIORIDADES, STATUS_LABEL } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { compressImage } from '../../lib/image';
+import MoneyInput from '../MoneyInput';
 import { formatDateBR, formatMoney, formatOSNumero, todayISO } from '../../lib/format';
 import {
   createOS,
@@ -98,6 +99,7 @@ export default function OSModal({ os, osList, onClose, onSaved }: Props) {
           url: await anexoSignedUrl(a.storage_path),
           isPdf: a.storage_path.endsWith('.pdf'),
           storagePath: a.storage_path,
+          originalName: a.nome_original ?? undefined,
         }))
       );
       setFotos(ui.filter((a) => a.tipo === 'foto'));
@@ -168,14 +170,21 @@ export default function OSModal({ os, osList, onClose, onSaved }: Props) {
         const url = URL.createObjectURL(blob);
         setter((prev) => [
           ...prev,
-          { id: uid(), tipo, url, isPdf: finalIsPdf, file: new File([blob], `anexo.${ext}`, { type: blob.type || file.type }) },
+          {
+            id: uid(),
+            tipo,
+            url,
+            isPdf: finalIsPdf,
+            file: new File([blob], `anexo.${ext}`, { type: blob.type || file.type }),
+            originalName: file.name,
+          },
         ]);
       } else if (os) {
-        const anexo = await uploadAnexo(os.id, tipo, blob, ext);
+        const anexo = await uploadAnexo(os.id, tipo, blob, ext, file.name);
         const url = await anexoSignedUrl(anexo.storage_path);
         setter((prev) => [
           ...prev,
-          { id: anexo.id, tipo, url, isPdf: finalIsPdf, storagePath: anexo.storage_path },
+          { id: anexo.id, tipo, url, isPdf: finalIsPdf, storagePath: anexo.storage_path, originalName: file.name },
         ]);
       }
     }
@@ -264,10 +273,10 @@ export default function OSModal({ os, osList, onClose, onSaved }: Props) {
           if (o.aprovado) await setOrcamentoAprovado(created.id, r.id);
         }
         for (const f of fotos) {
-          if (f.file) await uploadAnexo(created.id, 'foto', f.file, f.file.name.split('.').pop() || 'jpg');
+          if (f.file) await uploadAnexo(created.id, 'foto', f.file, f.file.name.split('.').pop() || 'jpg', f.originalName);
         }
         for (const n of notasFiscais) {
-          if (n.file) await uploadAnexo(created.id, 'nota_fiscal', n.file, n.file.name.split('.').pop() || 'jpg');
+          if (n.file) await uploadAnexo(created.id, 'nota_fiscal', n.file, n.file.name.split('.').pop() || 'jpg', n.originalName);
         }
         await addLogEntry(created.id, socioNome, 'O.S. criada');
         for (const texto of pendingLog) {
@@ -415,7 +424,7 @@ export default function OSModal({ os, osList, onClose, onSaved }: Props) {
             </div>
             <div className="field" style={{ maxWidth: 200 }}>
               <label>Preço do serviço (R$)</label>
-              <input type="number" step="0.01" value={preco} onChange={(e) => setPreco(Number(e.target.value))} />
+              <MoneyInput value={preco} onChange={setPreco} placeholder="0,00" />
             </div>
           </div>
 

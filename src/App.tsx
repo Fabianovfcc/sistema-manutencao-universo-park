@@ -8,6 +8,7 @@ import RelatorioTab from './components/Relatorio/RelatorioTab';
 import OSModal from './components/OSModal/OSModal';
 import { useOS } from './hooks/useOS';
 import { useRotinas } from './hooks/useRotinas';
+import { useChecklistData } from './hooks/useChecklist';
 import type { OS } from './types';
 import './styles/common.css';
 
@@ -20,6 +21,7 @@ function AppShell() {
 
   const { osList, loading: osLoading, reload: reloadOS } = useOS();
   const { rotinas, loading: rotinasLoading, reload: reloadRotinas } = useRotinas();
+  const checklist = useChecklistData();
 
   if (loading) {
     return <div style={{ padding: 40, color: 'var(--text-2)' }}>Carregando...</div>;
@@ -37,9 +39,9 @@ function AppShell() {
         <KanbanBoard osList={osList} loading={osLoading} onOpen={(os) => setModalOS(os)} onChanged={reloadOS} />
       )}
       {tab === 'rotina' && (
-        <RotinaTab rotinas={rotinas} loading={rotinasLoading} onChanged={reloadRotinas} />
+        <RotinaTab rotinas={rotinas} loading={rotinasLoading} onChanged={reloadRotinas} checklist={checklist} />
       )}
-      {tab === 'relatorio' && <RelatorioTab osList={osList} rotinas={rotinas} />}
+      {tab === 'relatorio' && <RelatorioTab osList={osList} rotinas={rotinas} checklist={checklist} />}
 
       {modalOS && (
         <OSModal
