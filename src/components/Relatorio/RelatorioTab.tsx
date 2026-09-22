@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import type { OS, Rotina } from '../../types';
 import { CATEGORIAS, CHECKLIST_STATUS_LABEL } from '../../types';
 import { formatDateBR, formatMoney, formatOSNumero, daysBetween, isAtrasado, addDaysISO, todayISO } from '../../lib/format';
-import { osListToCSV, downloadCSV } from '../../lib/csv';
 import type { ChecklistData } from '../../hooks/useChecklist';
 import DateRangePicker from './DateRangePicker';
 
@@ -15,10 +14,10 @@ interface Props {
 export default function RelatorioTab({ osList, rotinas, checklist }: Props) {
   const [mostrandoCalendario, setMostrandoCalendario] = useState(false);
 
-  function baixarRelatorio(inicio: string, fim: string) {
+  async function baixarRelatorio(inicio: string, fim: string) {
     const filtradas = osList.filter((o) => o.data_abertura >= inicio && o.data_abertura <= fim);
-    const csv = osListToCSV(filtradas);
-    downloadCSV(csv, `relatorio-os_${inicio}_a_${fim}.csv`);
+    const { gerarRelatorioPDF } = await import('../../lib/pdf');
+    gerarRelatorioPDF(filtradas, inicio, fim);
     setMostrandoCalendario(false);
   }
 

@@ -123,7 +123,7 @@ export default function DateRangePicker({ onConfirm, onClose }: Props) {
             disabled={!inicio || !fim}
             onClick={() => inicio && fim && onConfirm(inicio, fim)}
           >
-            Baixar CSV
+            Baixar PDF
           </button>
         </div>
       </div>
